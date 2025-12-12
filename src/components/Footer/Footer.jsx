@@ -1,16 +1,17 @@
 import { FaFacebook, FaTwitter, FaYoutube } from "react-icons/fa";
 import { Link } from "react-router";
+import Logo from "../Logo/Logo";
 
 export default function Footer() {
   return (
     <footer className="bg-neutral text-neutral-content p-10 ">
       <div className="footer sm:footer-horizontal mx-auto container">
         <aside>
-          <h2 className="text-xl font-bold">SkillShare</h2>
+          <Logo />
           <p>
-            SkillShare Society Club.
+            FabriChain Knitwear Limited
             <br />
-            Providing reliable tech since 2020
+            Supplying Garments since 2020
           </p>
         </aside>
         <div>
