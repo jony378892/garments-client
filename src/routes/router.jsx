@@ -7,11 +7,16 @@ import Products from "../pages/Products/Products";
 import Contact from "../pages/Contact/Contact";
 import Login from "../pages/Auth/Login/Login";
 import Register from "../pages/Auth/Register/Register";
+import Dashboard from "../pages/Dashboard/Dashboard";
+import Loading from "../components/Shared/Loading";
+import PrivateRoute from "./PrivateRoute";
+import ProductDetails from "../pages/ProductDetails/ProductDetails";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: RootLayout,
+    hydrateFallbackElement: Loading,
     children: [
       {
         index: true,
@@ -28,6 +33,18 @@ export const router = createBrowserRouter([
       {
         path: "products",
         Component: Products,
+      },
+      {
+        path: "products/:id",
+        element: (
+          <PrivateRoute>
+            <ProductDetails />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "dashboard",
+        Component: Dashboard,
       },
       {
         path: "",

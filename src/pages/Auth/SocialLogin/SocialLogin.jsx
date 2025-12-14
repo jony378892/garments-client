@@ -2,21 +2,32 @@ import { FcGoogle } from "react-icons/fc";
 import useAuth from "../../../hooks/useAuth";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
+import useAxios from "../../../hooks/useAxios";
 
 export default function SocialLogin() {
   const navigate = useNavigate();
+  const axiosInstance = useAxios();
   const { signInWithGoogle } = useAuth();
 
   const handleGoogleSignIn = () => {
     signInWithGoogle()
-      .then((result) => {
-        const currentUser = result.user;
-        // console.log(currentUser);
+      .then((res) => {
+        const currentUser = res.user;
+        console.log(currentUser);
+        const { displayName, email, photoURL } = currentUser;
 
-        if (location.state) {
-          navigate(location.state);
-        } else {
-          navigate("/");
+        const userInfo = {
+          displayName,
+          email,
+          photoURL,
+        };
+
+        axiosInstance.post("/users", userInfo).then((res) => {
+          console.log("User data has been stored", res.data);
+        });
+
+        if (location?.state) {
+          navigate(location.state || "/");
         }
       })
       .catch((error) => {
@@ -32,7 +43,7 @@ export default function SocialLogin() {
       onClick={handleGoogleSignIn}
     >
       <FcGoogle size={17} />
-      Signup with Google
+      SignIn with Google
     </button>
   );
 }

@@ -21,7 +21,7 @@ export default function Register() {
   } = useForm();
 
   const handleRegister = async (data) => {
-    const { email, password, image, name } = data;
+    const { email, password, image, displayName } = data;
     console.log(data);
 
     if (!image || !image[0]) {
@@ -44,29 +44,32 @@ export default function Register() {
       const photoURL = uploadRes.data.data.url;
       console.log(photoURL);
 
-      // Step 3: Save user in database
       const userInfo = {
         email,
-        displayName: name,
+        displayName,
         photoURL,
       };
 
-      const saveRes = await axiosInstance.post("/users", userInfo);
+      // store user data in database
+      const result = await axiosInstance.post("/users", userInfo);
 
-      if (saveRes.data.insertedId) {
+      if (result.data.insertedId) {
+        console.log(result.data);
         toast.success("User created successfully");
       }
 
-      // Step 4: Update firebase profile
+      // Update firebase profile
       await updateUser({
-        displayName: name,
+        displayName,
         photoURL,
-      });
-
-      navigate(location?.state || "/");
+      })
+        .then(() => {
+          // navigate to other route
+          navigate(location.state || "/");
+        })
+        .catch((error) => console.log(error));
     } catch (error) {
       console.log(error);
-      toast.error(error.message || "Registration failed");
     }
   };
 
@@ -88,12 +91,14 @@ export default function Register() {
             {/* Name */}
             <label className="label">Name</label>
             <input
-              {...register("name", { required: true })}
+              {...register("displayName", { required: true })}
               type="text"
               className="input input-bordered"
               placeholder="Your full name"
             />
-            {errors.name && <p className="text-red-500">Name is required.</p>}
+            {errors.displayName && (
+              <p className="text-red-500">Name is required.</p>
+            )}
 
             {/* Image */}
             <label className="label">Profile Photo</label>

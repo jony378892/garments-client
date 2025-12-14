@@ -5,7 +5,7 @@ import SocialLogin from "../SocialLogin/SocialLogin";
 import useAuth from "../../../hooks/useAuth";
 
 export default function Login() {
-  const { user, setUser, logInUser, signInWithGoogle } = useAuth();
+  const { user, signInUser } = useAuth();
   const {
     register,
     handleSubmit,
@@ -15,18 +15,11 @@ export default function Login() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleSignIn = (e) => {
-    e.preventDefault();
+  const handleLogIn = (data) => {
+    const { email, password } = data;
 
-    const form = e.target;
-    const email = form.email.value;
-    const password = form.password.value;
-
-    logInUser(email, password)
-      .then((result) => {
-        const currentUser = result.user;
-        // console.log(currentUser);
-        setUser(currentUser);
+    signInUser(email, password)
+      .then(() => {
         toast("Signin successful");
 
         if (location.state) {
@@ -36,19 +29,14 @@ export default function Login() {
         }
       })
       .catch((error) => {
-        const errorMessage = error.message;
-        toast(errorMessage);
+        toast(error);
       });
-  };
-
-  const handleLoginEmail = (data) => {
-    console.log(data);
   };
 
   return (
     <div className="hero min-h-screen">
       <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-none sm:shadow-2xl my-10">
-        <form className="card-body" onSubmit={handleSubmit(handleLoginEmail)}>
+        <form className="card-body" onSubmit={handleSubmit(handleLogIn)}>
           <div className="mb-5 text-center">
             <h2 className="text-3xl font-bold">
               <br />
@@ -57,22 +45,34 @@ export default function Login() {
             <small className="text-gray-500">Login now to get started.</small>
           </div>
           <fieldset className="fieldset">
+            {/* Email */}
             <label className="label">Email</label>
             <input
-              {...register("email")}
+              {...register("email", { required: true })}
               type="email"
               className="input outline-none"
               placeholder="Email"
               required
             />
+            {errors.email?.type === "required" && (
+              <p className="text-red-500">Email is required</p>
+            )}
+
+            {/* Password */}
             <label className="label">Password</label>
             <input
-              {...register("password")}
+              {...register("password", {
+                required: true,
+              })}
               type="password"
               className="input outline-none"
               placeholder="Password"
               required
             />
+            {errors.password?.type === "required" && (
+              <p className="text-red-500">Password is required</p>
+            )}
+
             <div>
               <Link to="/auth/forget-password" className="link link-hover">
                 Forgot password?

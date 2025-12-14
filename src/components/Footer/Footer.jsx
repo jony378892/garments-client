@@ -1,6 +1,6 @@
 import { FaFacebook, FaTwitter, FaYoutube } from "react-icons/fa";
 import { Link } from "react-router";
-import Logo from "../Logo/Logo";
+import Logo from "../Shared/Logo";
 
 export default function Footer() {
   return (
@@ -9,7 +9,7 @@ export default function Footer() {
         <aside>
           <Logo />
           <p>
-            FabriChain Knitwear Limited
+            Fabrico Knitwear Limited
             <br />
             Supplying Garments since 2020
           </p>
@@ -21,15 +21,15 @@ export default function Footer() {
         <nav>
           <h6 className="footer-title">Social</h6>
           <div className="grid grid-flow-col gap-4">
-            <a>
+            <Link>
               <FaTwitter size={24} />
-            </a>
+            </Link>
             <a>
               <FaYoutube size={26} />
             </a>
-            <a>
+            <Link>
               <FaFacebook size={24} />
-            </a>
+            </Link>
           </div>
         </nav>
       </div>
