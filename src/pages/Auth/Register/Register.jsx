@@ -12,7 +12,7 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const axiosInstance = useAxios();
-  const { registerUser, updateUser } = useAuth();
+  const { registerUser, updateUser, loading, setLoading } = useAuth();
 
   const {
     register,
@@ -21,7 +21,7 @@ export default function Register() {
   } = useForm();
 
   const handleRegister = async (data) => {
-    const { email, password, image, displayName } = data;
+    const { email, password, image, displayName, role } = data;
     console.log(data);
 
     if (!image || !image[0]) {
@@ -29,48 +29,55 @@ export default function Register() {
       return;
     }
 
-    try {
-      await registerUser(email, password);
+    registerUser(email, password)
+      .then(() => {
+        const formData = new FormData();
+        formData.append("image", image[0]);
 
-      const formData = new FormData();
-      formData.append("image", image[0]);
+        const image_api_url = `https://api.imgbb.com/1/upload?key=${
+          import.meta.env.VITE_IMAGE_API_KEY
+        }`;
 
-      const image_api_url = `https://api.imgbb.com/1/upload?key=${
-        import.meta.env.VITE_IMAGE_API_KEY
-      }`;
+        axios.post(image_api_url, formData).then((res) => {
+          const photoURL = res.data.data.url;
 
-      const uploadRes = await axios.post(image_api_url, formData);
+          const userInfo = {
+            displayName,
+            email,
+            photoURL,
+            role,
+          };
 
-      const photoURL = uploadRes.data.data.url;
-      console.log(photoURL);
+          // store user data in database
+          axiosInstance.post("/users", userInfo).then((result) => {
+            if (result.data.insertedId) {
+              console.log(result.data);
+            }
+          });
 
-      const userInfo = {
-        email,
-        displayName,
-        photoURL,
-      };
-
-      // store user data in database
-      const result = await axiosInstance.post("/users", userInfo);
-
-      if (result.data.insertedId) {
-        console.log(result.data);
-        toast.success("User created successfully");
-      }
-
-      // Update firebase profile
-      await updateUser({
-        displayName,
-        photoURL,
+          // Update firebase profile
+          updateUser({
+            displayName,
+            photoURL,
+          })
+            .then(() => {
+              toast.success("Registration successful");
+              // navigate to other route
+              navigate(location.state || "/");
+            })
+            .catch((error) => {
+              setLoading(false);
+              console.log(error);
+            });
+        });
       })
-        .then(() => {
-          // navigate to other route
-          navigate(location.state || "/");
-        })
-        .catch((error) => console.log(error));
-    } catch (error) {
-      console.log(error);
-    }
+      .catch((error) => {
+        setLoading(false);
+        if (error.message === "Firebase: Error (auth/email-already-in-use).") {
+          toast.error("User already exists");
+        }
+        console.log(error.message);
+      });
   };
 
   return (
@@ -100,6 +107,26 @@ export default function Register() {
               <p className="text-red-500">Name is required.</p>
             )}
 
+            {/* Email */}
+            <label className="label">Email</label>
+            <input
+              {...register("email", {
+                required: true,
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+                  message: "Enter a valid email address.",
+                },
+              })}
+              type="email"
+              className="input input-bordered"
+              placeholder="Email address"
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm">
+                Enter a valid email address
+              </p>
+            )}
+
             {/* Image */}
             <label className="label">Profile Photo</label>
             <input
@@ -110,26 +137,45 @@ export default function Register() {
             />
             {errors.image && <p className="text-red-500">Photo is required.</p>}
 
-            {/* Email */}
-            <label className="label">Email</label>
-            <input
-              {...register("email", { required: true })}
-              type="email"
-              className="input input-bordered"
-              placeholder="Email address"
-            />
-            {errors.email && <p className="text-red-500">Email is required.</p>}
+            {/* Role */}
+            <label className="label">Pick a role</label>
+            <select
+              className="select"
+              defaultValue=""
+              {...register("role", { required: true })}
+            >
+              <option value="" disabled>
+                Pick a role
+              </option>
+              <option value="buyer">Buyer</option>
+              <option value="manager">Manager</option>
+            </select>
+            {errors.role && (
+              <p className="text-red-500 text-xs ">Select a valid role</p>
+            )}
 
             {/* Password */}
             <label className="label">Password</label>
             <div className="relative">
               <input
-                {...register("password", { required: true })}
+                {...register("password", {
+                  required: true,
+                  pattern: {
+                    value: /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
+                    message:
+                      "Enter a valid password. Password must be 6 character long and must have one uppercase letter, one lowercase letter",
+                  },
+                })}
                 className="input input-bordered"
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
-                minLength="8"
               />
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password.message}
+                </p>
+              )}
+
               <button
                 type="button"
                 className="absolute right-8 top-3 cursor-pointer z-10"
@@ -146,7 +192,16 @@ export default function Register() {
               <p className="text-red-500">Password is required.</p>
             )}
 
-            <button className="btn btn-neutral mt-5 w-full">Signup</button>
+            <button className="btn btn-neutral mt-5 w-full">
+              {!loading ? (
+                "Signup"
+              ) : (
+                <>
+                  <span className="loading loading-spinner loading-sm"></span>
+                  <p>Signing Up</p>
+                </>
+              )}
+            </button>
           </fieldset>
 
           <p className="font-semibold text-sm mt-4 text-center">
@@ -155,9 +210,6 @@ export default function Register() {
               Login Now
             </Link>
           </p>
-
-          <div className="divider">OR</div>
-          <SocialLogin />
         </form>
       </div>
     </div>
