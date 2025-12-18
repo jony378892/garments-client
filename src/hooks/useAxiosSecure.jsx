@@ -1,33 +1,33 @@
 import axios from "axios";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import useAuth from "./useAuth";
 import { useNavigate } from "react-router";
 
-const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000",
+const axiosSecure = axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_URL,
 });
 
-export default function useAxiosSecure() {
+const useAxiosSecure = () => {
   const { user, logOutUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const reqInterceptor = axios.interceptors.request.use((config) => {
+    // intercept request
+    const reqInterceptor = axiosSecure.interceptors.request.use((config) => {
       config.headers.Authorization = `Bearer ${user?.accessToken}`;
-
       return config;
     });
 
-    const resInterceptor = axios.interceptors.response.use(
+    // interceptor response
+    const resInterceptor = axiosSecure.interceptors.response.use(
       (response) => {
         return response;
       },
       (error) => {
         console.log(error);
 
-        const errorStatus = error.status;
-
-        if (errorStatus === 401 || errorStatus === 403) {
+        const statusCode = error.status;
+        if (statusCode === 401 || statusCode === 403) {
           logOutUser().then(() => {
             navigate("/login");
           });
@@ -38,10 +38,12 @@ export default function useAxiosSecure() {
     );
 
     return () => {
-      axios.interceptors.request.eject(reqInterceptor);
-      axios.interceptors.response.eject(resInterceptor);
+      axiosSecure.interceptors.request.eject(reqInterceptor);
+      axiosSecure.interceptors.response.eject(resInterceptor);
     };
   }, [user, logOutUser, navigate]);
 
-  return axiosInstance;
-}
+  return axiosSecure;
+};
+
+export default useAxiosSecure;
