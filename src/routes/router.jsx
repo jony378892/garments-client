@@ -103,7 +103,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "track-order/:id",
+        path: "track-order/:orderId",
         element: (
           <PrivateRoute>
             <TrackOrder />
