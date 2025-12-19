@@ -1,4 +1,3 @@
-import React from "react";
 import useCurrentUser from "../../../hooks/useCurrentUser";
 import Loading from "../../../components/Shared/Loading";
 import useAuth from "../../../hooks/useAuth";

@@ -1,26 +1,42 @@
 import React, { forwardRef } from "react";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAxiosSecure from "../../../../hooks/useAxiosSecure";
+import toast from "react-hot-toast";
 
 const RoleApprovalModal = forwardRef(({ user, onRoleUpdate }, ref) => {
   const axiosSecure = useAxiosSecure();
 
   const approveUser = async () => {
     try {
-      await axiosSecure.patch(`/users/${user._id}/role`, {
+      const res = await axiosSecure.patch(`/users/${user._id}/role`, {
         status: "approved",
       });
-      onRoleUpdate();
+
+      if (res.data.modifiedCount) {
+        toast.success("Role updated successfully");
+        onRoleUpdate();
+      } else {
+        toast.error("Something went wrong!");
+      }
+
       ref.current.close();
     } catch (error) {
-      console.error("Error approving user");
+      toast.error("Error approving user");
+      // console.log(error)
     }
   };
 
   const rejectUser = async () => {
     try {
-      await axiosSecure.patch(`/users/${user._id}/role`, {
+      const res = await axiosSecure.patch(`/users/${user._id}/role`, {
         status: "rejected",
       });
+
+      if (res.data.modifiedCount) {
+        toast.success("Role updated successfully.");
+      } else {
+        toast.error("Something went wrong!");
+      }
+
       onRoleUpdate();
       ref.current.close();
     } catch (error) {

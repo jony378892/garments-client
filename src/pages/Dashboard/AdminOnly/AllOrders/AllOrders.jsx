@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import Loading from "../../../components/Shared/Loading";
+import useAxiosSecure from "../../../../hooks/useAxiosSecure";
+import Loading from "../../../../components/Shared/Loading";
 
 export default function AllOrders() {
   const axiosSecure = useAxiosSecure();

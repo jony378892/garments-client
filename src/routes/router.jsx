@@ -15,15 +15,18 @@ import PaymentSuccess from "../pages/Payment/PaymentSuccess";
 import PaymentCancelled from "../pages/Payment/PaymentCancelled";
 import AdminRoute from "./AdminRoute";
 import ManagerRoute from "./ManagerRoute";
-import ManageUsers from "../pages/Dashboard/ManageUsers/ManageUsers";
+import ManageUsers from "../pages/Dashboard/AdminOnly/ManageUsers/ManageUsers";
 import DashboardLayout from "../layouts/DashboardLayout";
-import AllProducts from "../pages/Dashboard/AllProducts/AllProducts";
-import AllOrders from "../pages/Dashboard/AllOrders/AllOrders";
-import AddProduct from "../pages/AddProduct/AddProduct";
-import ManageProducts from "../pages/Dashboard/ManageProducts/ManageProducts";
-import PendingOrders from "../pages/Dashboard/PendingOrders/PendingOrders";
-import ApproveOrders from "../pages/ApproveOrders/ApproveOrders";
+import AllProducts from "../pages/Dashboard/AdminOnly/AllProducts/AllProducts";
+import AllOrders from "../pages/Dashboard/AdminOnly/AllOrders/AllOrders";
 import MyProfile from "../pages/Dashboard/MyProfile/MyProfile";
+import DashboardHome from "../pages/Dashboard/DashboardHome/DashboardHome";
+import AddProduct from "../pages/Dashboard/ManagerOnly/AddProduct/AddProduct";
+import ManageProducts from "../pages/Dashboard/ManagerOnly/ManageProducts/ManageProducts";
+import PendingOrders from "../pages/Dashboard/ManagerOnly/PendingOrders/PendingOrders";
+import ApproveOrders from "../pages/Dashboard/ManagerOnly/ApprovedOrders/ApprovedOrders";
+import MyOrders from "../pages/Dashboard/BuyerOnly/MyOrders/MyOrders";
+import TrackOrder from "../pages/Dashboard/BuyerOnly/TrackOrder/TrackOrder";
 
 export const router = createBrowserRouter([
   {
@@ -88,6 +91,26 @@ export const router = createBrowserRouter([
     Component: DashboardLayout,
     children: [
       {
+        index: true,
+        Component: DashboardHome,
+      },
+      {
+        path: "my-orders",
+        element: (
+          <PrivateRoute>
+            <MyOrders />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "track-order/:id",
+        element: (
+          <PrivateRoute>
+            <TrackOrder />
+          </PrivateRoute>
+        ),
+      },
+      {
         path: "manage-users",
         element: (
           <AdminRoute>
@@ -136,7 +159,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "approve-orders",
+        path: "approved-orders",
         element: (
           <ManagerRoute>
             <ApproveOrders />

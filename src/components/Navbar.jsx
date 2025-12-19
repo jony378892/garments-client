@@ -3,11 +3,11 @@ import Logo from "./Shared/Logo";
 
 import useAuth from "../hooks/useAuth";
 import toast from "react-hot-toast";
-import useCurrentUser from "../hooks/useCurrentUser";
+import useRole from "../hooks/useRole";
 
 export default function Navbar() {
   const { user, logOutUser } = useAuth();
-  const { currentUser } = useCurrentUser();
+  const { role } = useRole();
   // console.log(user);
 
   const handleLogOut = () => {
@@ -28,42 +28,12 @@ export default function Navbar() {
       <li>
         <Link to="/products">Products</Link>
       </li>
+      <li>
+        <Link to="/dashboard">Dashboard</Link>
+      </li>
       <div className="flex items-center gap-3">
         {user ? (
           <>
-            <button
-              className="cursor-pointer ml-3"
-              popoverTarget="popover-1"
-              style={{ anchorName: "--anchor-1" } /* as React.CSSProperties */}
-            >
-              Dashboard
-            </button>
-
-            <ul
-              className="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
-              popover="auto"
-              id="popover-1"
-              style={
-                { positionAnchor: "--anchor-1" } /* as React.CSSProperties */
-              }
-            >
-              {currentUser.role === "admin" && (
-                <>
-                  <li>
-                    <Link to="/dashboard/manage-users">User Management</Link>
-                  </li>
-                  <li>
-                    <Link to="/dashboard/all-product">All Product</Link>
-                  </li>
-                  <li>
-                    <Link to="/dashboard/all-orders">All Orders</Link>
-                  </li>
-                </>
-              )}
-              <li>
-                <Link to="/dashboard/profile">My Profile</Link>
-              </li>
-            </ul>
             <li>
               <button
                 className="btn btn-error btn-sm ml-2"

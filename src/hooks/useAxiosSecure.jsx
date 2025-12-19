@@ -13,26 +13,41 @@ const useAxiosSecure = () => {
 
   useEffect(() => {
     // intercept request
-    const reqInterceptor = axiosSecure.interceptors.request.use((config) => {
-      config.headers.Authorization = `Bearer ${user?.accessToken}`;
-      return config;
-    });
+    const reqInterceptor = axiosSecure.interceptors.request.use(
+      async (config) => {
+        if (user) {
+          try {
+            // Get fresh ID token from Firebase user
+            const token = await user.getIdToken(true); // true forces refresh
+            config.headers.Authorization = `Bearer ${token}`;
+          } catch (error) {
+            console.error("Error getting ID token:", error);
+          }
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
 
     // interceptor response
     const resInterceptor = axiosSecure.interceptors.response.use(
       (response) => {
         return response;
       },
-      (error) => {
+      async (error) => {
         console.log(error);
+        const statusCode = error?.response?.status;
 
-        const statusCode = error.status;
         if (statusCode === 401 || statusCode === 403) {
-          logOutUser().then(() => {
+          try {
+            await logOutUser();
             navigate("/login");
-          });
+          } catch (logoutError) {
+            console.error("Logout error:", logoutError);
+          }
         }
-
         return Promise.reject(error);
       }
     );

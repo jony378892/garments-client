@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAxiosSecure from "../../../../hooks/useAxiosSecure";
 import { FaEdit } from "react-icons/fa";
 import { useRef, useState } from "react";
 import RoleApprovalModal from "./RoleApprovalModal";
@@ -30,7 +30,6 @@ export default function ManageUsers() {
     <div className="p-6">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Manage Users</h2>
-        <p className="text-gray-600">View and manage user roles</p>
       </div>
 
       <div className="overflow-x-auto bg-white rounded-lg shadow">
