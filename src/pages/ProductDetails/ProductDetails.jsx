@@ -3,11 +3,11 @@ import { Link, useParams } from "react-router";
 import useAxios from "../../hooks/useAxios";
 import Loading from "../../components/Shared/Loading";
 import { useState } from "react";
-import useAuth from "../../hooks/useAuth";
+import useRole from "../../hooks/useRole";
 
 export default function ProductDetails() {
   const [mainImage, setMainImage] = useState(0);
-  const { user } = useAuth();
+  const { role } = useRole();
   const { id } = useParams();
   const axiosInstance = useAxios();
 
@@ -31,7 +31,7 @@ export default function ProductDetails() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-base-100 shadow-sm rounded-lg p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-base-100 sm:shadow-sm rounded-lg sm:p-6">
         {/* Images */}
         <div className="flex flex-col gap-4">
           <div className="rounded-md overflow-hidden bg-gray-100">
@@ -132,7 +132,7 @@ export default function ProductDetails() {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Link to={`/order-form/${product._id}`}>
               <button
-                disabled={user.role == "admin" || user.role == "manager"}
+                disabled={role == "admin" || role == "manager"}
                 className="btn btn-primary"
               >
                 Order now

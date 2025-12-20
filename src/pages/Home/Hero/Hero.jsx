@@ -60,11 +60,11 @@ export default function Hero() {
               <div className="relative z-10 h-full flex items-center">
                 <div className="max-w-7xl mx-auto px-4 w-full">
                   <div className="max-w-xl text-white ml-5">
-                    <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+                    <h1 className="text-3xl md:text-5xl font-bold leading-tight">
                       {slide.title}
                     </h1>
 
-                    <p className="mt-5 text-lg text-gray-200">
+                    <p className="mt-5 text-sm sm:text-lg text-gray-200">
                       {slide.description}
                     </p>
 

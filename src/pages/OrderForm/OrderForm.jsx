@@ -1,18 +1,18 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useForm, useWatch } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../hooks/useAxios";
 import Loading from "../../components/Shared/Loading";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import { useState } from "react";
+import toast from "react-hot-toast";
 
-export default function Order() {
+export default function OrderForm() {
   const { user, loading } = useAuth();
   const { id } = useParams();
   const axiosInstance = useAxios();
   const axiosSecure = useAxiosSecure();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   // Fetch product
   const { isLoading, data: product } = useQuery({
@@ -38,7 +38,7 @@ export default function Order() {
   // Watch quantity
   const quantity = useWatch({ control, name: "quantity" });
 
-  // Calculate total price safely
+  // Total price
   const totalPrice = product && quantity ? product.price * quantity : 0;
 
   if (isLoading || loading) {
@@ -46,42 +46,51 @@ export default function Order() {
   }
 
   const onSubmit = async (data) => {
-    setIsSubmitting(true);
-
     const orderPayload = {
       ...data,
       productId: product._id,
       productName: product.name,
       unitPrice: product.price,
       totalPrice: totalPrice,
+      approvalStatus: "pending",
+      createdAt: new Date(),
+      status: "pending",
     };
 
-    console.log("Order Data:", orderPayload);
+    if (product.paymentMethod == "cash_on_delivery") {
+      orderPayload.paymentMethod = "cash_on_delivery";
+    } else {
+      orderPayload.paymentMethod == "stripe";
+    }
+
+    // console.log("Order Data:", orderPayload);
 
     try {
-      // Step 1: Create order in database
       const orderResponse = await axiosSecure.post("/orders", orderPayload);
 
       if (orderResponse.data.insertedId) {
-        console.log("Order created:", orderResponse.data);
+        toast.success("Order created successfully.");
+        // console.log("Order created:", orderResponse.data);
 
-        // Step 2: Create Stripe checkout session
-        const checkoutResponse = await axiosInstance.post(
-          "/create-checkout-session",
-          orderPayload
-        );
+        if (product.paymentMethod == "stripe") {
+          const checkoutResponse = await axiosInstance.post(
+            "/create-checkout-session",
+            orderPayload
+          );
 
-        // Step 3: Redirect to Stripe checkout
-        if (checkoutResponse.data.url) {
-          window.location.href = checkoutResponse.data.url;
+          if (checkoutResponse.data.url) {
+            window.location.href = checkoutResponse.data.url;
+          } else {
+            toast.error("Something went wrong. Try again later.");
+            throw new Error("No checkout URL received");
+          }
         } else {
-          throw new Error("No checkout URL received");
+          navigate("/products");
         }
       }
     } catch (error) {
       console.error("Order submission error:", error);
-      alert("Failed to process order. Please try again.");
-      setIsSubmitting(false);
+      toast.error("Failed to process order. Please try again.");
     }
   };
 
@@ -118,7 +127,7 @@ export default function Order() {
 
       {/* Unit Price */}
       <div>
-        <label className="label">Price per Unit</label>
+        <label className="label">Price per Unit</label>{" "}
         <input
           type="number"
           value={product.price}
@@ -131,11 +140,11 @@ export default function Order() {
       {/* Customer Name */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="label">First Name</label>
+          <label className="label">First Name *</label>
           <input
             className="input input-bordered w-full"
             {...register("firstName", {
-              required: "First name is required",
+              required: "required",
             })}
           />
           {errors.firstName && (
@@ -144,11 +153,11 @@ export default function Order() {
         </div>
 
         <div>
-          <label className="label">Last Name</label>
+          <label className="label">Last Name *</label>
           <input
             className="input input-bordered w-full"
             {...register("lastName", {
-              required: "Last name is required",
+              required: "required",
             })}
           />
           {errors.lastName && (
@@ -159,7 +168,7 @@ export default function Order() {
 
       {/* Quantity */}
       <div>
-        <label className="label">Order Quantity</label>
+        <label className="label">Order Quantity *</label>
         <input
           type="number"
           className="input input-bordered w-full"
@@ -195,12 +204,12 @@ export default function Order() {
 
       {/* Contact */}
       <div>
-        <label className="label">Contact Number</label>
+        <label className="label">Contact Number *</label>
         <input
           type="tel"
           className="input input-bordered w-full"
           {...register("contact", {
-            required: "Contact number is required",
+            required: "required",
           })}
         />
         {errors.contact && (
@@ -210,11 +219,11 @@ export default function Order() {
 
       {/* Address */}
       <div>
-        <label className="label">Delivery Address</label>
+        <label className="label">Delivery Address *</label>
         <textarea
           className="textarea textarea-bordered w-full"
           {...register("address", {
-            required: "Delivery address is required",
+            required: "required",
           })}
         />
         {errors.address && (
@@ -232,10 +241,16 @@ export default function Order() {
         />
       </div>
 
-      {/* Submit */}
-      <button className="btn btn-primary w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Processing..." : "Proceed and Pay"}
-      </button>
+      {/* Submit button */}
+      {product.paymentMethod == "cash_on_delivery" ? (
+        <button className="btn btn-primary w-full">
+          Proceed(Cash on delivery)
+        </button>
+      ) : (
+        <button className="btn btn-primary w-full">
+          Proceed and Pay (Stripe)
+        </button>
+      )}
     </form>
   );
 }

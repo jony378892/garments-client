@@ -3,9 +3,11 @@ import useAxiosSecure from "../../../../hooks/useAxiosSecure";
 import Loading from "../../../../components/Shared/Loading";
 import Swal from "sweetalert2";
 import { FaEye } from "react-icons/fa";
+import useAuth from "../../../../hooks/useAuth";
 
 export default function PendingOrders() {
   const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
   const {
     isLoading,
     refetch,
@@ -14,7 +16,7 @@ export default function PendingOrders() {
     queryKey: ["pending-orders"],
     queryFn: async () => {
       const res = await axiosSecure.get(
-        "/managed-products/orders?email=${user.email}"
+        `/managed-products/${user.email}/pending`
       );
       return res.data;
     },

@@ -56,7 +56,7 @@ export default function OurProducts() {
 
                 <div className="flex items-center justify-between pt-2">
                   <span className="text-lg font-bold text-gray-800">
-                    ৳ {product.price}
+                    $ {product.price}
                   </span>
 
                   <Link to={`/product/${product._id}`}>

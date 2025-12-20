@@ -3,11 +3,10 @@ import Logo from "./Shared/Logo";
 
 import useAuth from "../hooks/useAuth";
 import toast from "react-hot-toast";
-import useRole from "../hooks/useRole";
+import { IoMdMenu } from "react-icons/io";
 
 export default function Navbar() {
   const { user, logOutUser } = useAuth();
-  const { role } = useRole();
   // console.log(user);
 
   const handleLogOut = () => {
@@ -22,15 +21,17 @@ export default function Navbar() {
 
   const links = (
     <>
-      <li>
-        <Link to="/">Home</Link>
-      </li>
-      <li>
-        <Link to="/products">Products</Link>
-      </li>
-      <li>
-        <Link to="/dashboard">Dashboard</Link>
-      </li>
+      <div className="md:flex items-center hidden">
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/products">Products</Link>
+        </li>
+        <li>
+          <Link to="/dashboard">Dashboard</Link>
+        </li>
+      </div>
       <div className="flex items-center gap-3">
         {user ? (
           <>
@@ -53,10 +54,14 @@ export default function Navbar() {
         ) : (
           <>
             <li>
-              <Link to="/about">About Us</Link>
+              <Link className="hidden md:inline-block" to="/about">
+                About Us
+              </Link>
             </li>
             <li>
-              <Link to="/contact">Contact</Link>
+              <Link className="hidden md:inline-block" to="/contact">
+                Contact
+              </Link>
             </li>
             <li>
               <Link to="/login">Login</Link>
@@ -72,7 +77,32 @@ export default function Navbar() {
 
   return (
     <div className="navbar bg-base-100 shadow-sm">
-      <div className="flex-1">
+      <div className="flex-1 flex items-center">
+        <div className="dropdown md:hidden">
+          <div tabIndex={0} role="button" className="cursor-pointer">
+            <IoMdMenu size={24} className="mr-2" />
+          </div>
+          <ul
+            tabIndex="-1"
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow-lg border border-gray-300"
+          >
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/products">Products</Link>
+            </li>
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+            <li>
+              <Link to="/about">About Us</Link>
+            </li>
+            <li>
+              <Link to="/contact">Contact</Link>
+            </li>
+          </ul>
+        </div>
         <Logo />
       </div>
       <div className="flex-none ">

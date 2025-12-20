@@ -1,18 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
-import useAuth from "../../../../hooks/useAuth";
-import useAxiosSecure from "../../../../hooks/useAxiosSecure";
-import Loading from "../../../../components/Shared/Loading";
+import useAxiosSecure from "../../../../../hooks/useAxiosSecure";
+import Loading from "../../../../../components/Shared/Loading";
 
-export default function TrackOrder() {
+export default function OrderDetails() {
   const { id } = useParams();
-  const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
   const { isLoading, data } = useQuery({
-    queryKey: ["order", id, user?.email],
+    queryKey: ["order-details", id],
     queryFn: async () => {
-      const result = await axiosSecure.get(`/my-orders/${id}/track`);
+      const result = await axiosSecure.get(`/orders/${id}`);
       return result.data;
     },
   });

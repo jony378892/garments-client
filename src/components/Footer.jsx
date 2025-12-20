@@ -16,7 +16,9 @@ export default function Footer() {
         </aside>
         <div>
           <h3 className="footer-title">Links</h3>
-          <Link to={"/privacy-policy"}>Privacy Policy</Link>
+          <Link to="/privacy-policy">Privacy Policy</Link>
+          <Link to="/about">About Us</Link>
+          <Link to="/contact">Contact</Link>
         </div>
         <nav>
           <h6 className="footer-title">Social</h6>

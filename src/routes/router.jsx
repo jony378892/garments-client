@@ -10,7 +10,6 @@ import Register from "../pages/Auth/Register/Register";
 import Loading from "../components/Shared/Loading";
 import PrivateRoute from "./PrivateRoute";
 import ProductDetails from "../pages/ProductDetails/ProductDetails";
-import Order from "../pages/Order/Order";
 import PaymentSuccess from "../pages/Payment/PaymentSuccess";
 import PaymentCancelled from "../pages/Payment/PaymentCancelled";
 import AdminRoute from "./AdminRoute";
@@ -27,6 +26,10 @@ import PendingOrders from "../pages/Dashboard/ManagerOnly/PendingOrders/PendingO
 import ApproveOrders from "../pages/Dashboard/ManagerOnly/ApprovedOrders/ApprovedOrders";
 import MyOrders from "../pages/Dashboard/BuyerOnly/MyOrders/MyOrders";
 import TrackOrder from "../pages/Dashboard/BuyerOnly/TrackOrder/TrackOrder";
+import OrderForm from "../pages/OrderForm/OrderForm";
+import OrderDetails from "../pages/Dashboard/AdminOnly/AllOrders/OrderDetails/OrderDetails";
+import UpdateProduct from "../pages/Dashboard/ManagerOnly/UpdateProduct/UpdateProduct";
+import NotFound from "../components/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +44,9 @@ export const router = createBrowserRouter([
       {
         path: "about",
         Component: About,
+        handle: {
+          title: "About page - Fabrico",
+        },
       },
       {
         path: "contact",
@@ -60,7 +66,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "order-form/:id",
-        Component: Order,
+        element: (
+          <PrivateRoute>
+            <OrderForm />
+          </PrivateRoute>
+        ),
       },
       {
         path: "dashboard/payment-success",
@@ -103,7 +113,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "track-order/:orderId",
+        path: "track-order/:id",
         element: (
           <PrivateRoute>
             <TrackOrder />
@@ -111,11 +121,28 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "order-details/:id",
+        element: (
+          <PrivateRoute>
+            <OrderDetails />
+          </PrivateRoute>
+        ),
+      },
+
+      {
         path: "manage-users",
         element: (
           <AdminRoute>
             <ManageUsers />
           </AdminRoute>
+        ),
+      },
+      {
+        path: "update-product/:id",
+        element: (
+          <ManagerRoute>
+            <UpdateProduct />
+          </ManagerRoute>
         ),
       },
       {
@@ -175,5 +202,9 @@ export const router = createBrowserRouter([
         ),
       },
     ],
+  },
+  {
+    path: "/*",
+    Component: NotFound,
   },
 ]);

@@ -1,18 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../hooks/useAxiosSecure";
-import Loading from "../../../../components/Shared/Loading";
 import useAuth from "../../../../hooks/useAuth";
-import toast from "react-hot-toast";
-import { useEffect, useRef, useState } from "react";
-import ProductEditModal from "../../../../components/Shared/ProductEditModal";
+import { useState } from "react";
 import Swal from "sweetalert2";
 import { FaSearch } from "react-icons/fa";
+import { Link } from "react-router";
+import Loading from "../../../../components/Shared/Loading";
 
 export default function ManageProducts() {
   const [search, setSearch] = useState("");
   const axiosSecure = useAxiosSecure();
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const modalRef = useRef();
   const { user } = useAuth();
 
   const {
@@ -20,7 +17,7 @@ export default function ManageProducts() {
     refetch,
     data: products = [],
   } = useQuery({
-    queryKey: ["managed-products", user?.email],
+    queryKey: ["managed-products", search],
     queryFn: async () => {
       const res = await axiosSecure.get(
         `/managed-products?email=${user?.email}&searchText=${search}`
@@ -28,14 +25,6 @@ export default function ManageProducts() {
       return res.data;
     },
   });
-
-  useEffect(() => {
-    if (selectedProduct && modalRef.current) {
-      modalRef.current.showModal();
-    }
-  }, [selectedProduct]);
-
-  if (isLoading) return <Loading />;
 
   const handleDelete = async (id) => {
     Swal.fire({
@@ -46,48 +35,32 @@ export default function ManageProducts() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete the product!",
-    }).then(async () => {
-      const res = await axiosSecure.delete(`/managed-products/${id}/delete`);
-      // console.log(res.data);
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const res = await axiosSecure.delete(`/managed-products/${id}/delete`);
+        // console.log(res.data);
 
-      if (res.data.deletedCount) {
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
-        });
-      } else {
-        toast.error("Something went wrong. Try again later.");
+        if (res.data.deletedCount) {
+          refetch();
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your file has been deleted.",
+            icon: "success",
+          });
+        } else {
+          Swal.fire({ title: "Cancelled", icon: "question" });
+        }
       }
     });
   };
 
-  const handleShowModal = (product) => {
-    setSelectedProduct(product);
-  };
-
-  const handleUpdate = async (updatedData) => {
-    const { _id, ...updatedPayload } = updatedData;
-    // console.log(updatedPayload);
-    const res = await axiosSecure.patch(
-      `/managed-products/${_id}/update`,
-      updatedPayload
-    );
-
-    if (res.data.modifiedCount) {
-      refetch();
-
-      toast.success("Product updated successfully");
-      modalRef.current.close();
-    } else {
-      toast.error("No changes made");
-    }
-  };
-
   const handleSearch = (e) => {
     setSearch(e.target.value);
-    refetch();
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="p-6">
@@ -143,12 +116,9 @@ export default function ManageProducts() {
                     {product.paymentMethod.replaceAll("_", " ")}
                   </td>
                   <td>
-                    <button
-                      className="btn btn-sm btn-ghost"
-                      onClick={() => handleShowModal(product)}
-                    >
-                      Edit
-                    </button>
+                    <Link to={`/dashboard/update-product/${product._id}`}>
+                      <button className="btn btn-sm btn-ghost">Edit</button>
+                    </Link>
                     <button
                       className="btn btn-sm btn-error"
                       onClick={() => handleDelete(product._id)}
@@ -160,14 +130,6 @@ export default function ManageProducts() {
               ))}
             </tbody>
           </table>
-
-          {selectedProduct && (
-            <ProductEditModal
-              ref={modalRef}
-              product={selectedProduct}
-              onUpdate={handleUpdate}
-            />
-          )}
         </div>
       )}
     </div>

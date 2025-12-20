@@ -1,22 +1,38 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { useParams } from "react-router";
 import useAxiosSecure from "../../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import Loading from "../../../../components/Shared/Loading";
 import Swal from "sweetalert2";
 
-export default function AddProduct() {
+export default function UpdateProduct() {
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const { id } = useParams();
   const axiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient();
+
+  const {
+    refetch,
+    isLoading,
+    data: product,
+  } = useQuery({
+    queryKey: ["update-product", id],
+    queryFn: async () => {
+      const result = await axiosSecure.get(`/products/${id}`);
+      return result.data;
+    },
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm();
 
-  const [imagePreviews, setImagePreviews] = useState([]);
+  if (isLoading) {
+    return <Loading />;
+  }
 
   const onImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -24,54 +40,27 @@ export default function AddProduct() {
     setImagePreviews(previews);
   };
 
-  const onSubmit = async (data) => {
-    try {
-      const files = Array.from(data.images);
-      const uploadedImageUrls = [];
+  const handleUpdate = async (updatedData) => {
+    const { _id, ...updatedPayload } = updatedData;
+    console.log(updatedPayload);
+    const res = await axiosSecure.patch(
+      `/managed-products/${id}/update`,
+      updatedPayload
+    );
 
-      for (const file of files) {
-        const formData = new FormData();
-        formData.append("image", file);
-
-        const res = await axios.post(
-          `https://api.imgbb.com/1/upload?key=${
-            import.meta.env.VITE_IMAGE_API_KEY
-          }`,
-          formData
-        );
-
-        uploadedImageUrls.push(res.data.data.url);
-      }
-
-      const finalData = { ...data, images: uploadedImageUrls };
-
-      const result = await axiosSecure.post(`/products`, finalData);
-
-      // console.log(result.data);
-
-      if (result.data.insertedId) {
-        Swal.fire({
-          title: "Successful?",
-          text: "Product created successfully",
-          icon: "success",
-        });
-        queryClient.invalidateQueries({ queryKey: ["products"] });
-      } else {
-        toast.error("Something went wrong");
-      }
-
-      reset();
-      setImagePreviews([]);
-    } catch (error) {
-      console.error("Error uploading images:", error);
+    if (res.data.modifiedCount) {
+      refetch();
+      Swal.fire("Product updated successfully");
+    } else {
+      Swal.fire("No changes made");
     }
   };
 
   return (
     <div className="max-w-3xl mx-auto bg-base-100 p-6 rounded-xl">
-      <h2 className="text-xl font-semibold mb-6">Add New Product</h2>
+      <h2 className="text-xl font-semibold mb-6">Update Product</h2>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(handleUpdate)} className="space-y-5">
         {/* Product Name */}
         <div className="form-control flex flex-col gap-1">
           <label className="label">
@@ -82,6 +71,7 @@ export default function AddProduct() {
           <input
             {...register("name", { required: "Product name is required" })}
             type="text"
+            defaultValue={product.name}
             className="input input-bordered w-full"
           />
           {errors.name && (
@@ -100,6 +90,7 @@ export default function AddProduct() {
             {...register("description", {
               required: "Product description is required",
             })}
+            defaultValue={product.description}
             className="textarea textarea-bordered w-full"
             rows={4}
           />
@@ -120,6 +111,7 @@ export default function AddProduct() {
             </label>
             <select
               {...register("category", { required: "Category is required" })}
+              defaultValue={product.category}
               className="select select-bordered"
             >
               <option value="">Select Category</option>
@@ -148,6 +140,7 @@ export default function AddProduct() {
               })}
               type="number"
               step="0.01"
+              defaultValue={product.price}
               className="input input-bordered"
             />
             {errors.price && (
@@ -170,6 +163,7 @@ export default function AddProduct() {
                 valueAsNumber: true,
               })}
               type="number"
+              defaultValue={product.availableQuantity}
               className="input input-bordered"
             />
             {errors.availableQuantity && (
@@ -192,6 +186,7 @@ export default function AddProduct() {
                 valueAsNumber: true,
               })}
               type="number"
+              defaultValue={product.moq}
               className="input input-bordered"
             />
             {errors.moq && (
@@ -210,6 +205,7 @@ export default function AddProduct() {
               {...register("videoUrl")}
               type="url"
               placeholder="https://youtube.com/..."
+              defaultValue={product.videoUrl}
               className="input input-bordered"
             />
           </div>
@@ -225,6 +221,7 @@ export default function AddProduct() {
               {...register("paymentMethod", {
                 required: "Payment option is required",
               })}
+              defaultValue={product.paymentMethod}
               className="select select-bordered"
             >
               <option value="">Select Payment Option</option>
@@ -242,23 +239,34 @@ export default function AddProduct() {
         {/* Product Images */}
         <div className="form-control flex flex-col gap-1">
           <label className="label">
-            <span className="label-text">
-              Product Images <span className="text-error">*</span>
-            </span>
+            <span className="label-text">Product Images (optional)</span>
           </label>
           <input
-            {...register("images", { required: "Product images are required" })}
+            {...register("images")}
             type="file"
             multiple
             className="file-input file-input-bordered"
             onChange={onImageChange}
           />
-          {errors.images && (
-            <span className="text-error text-sm">{errors.images.message}</span>
-          )}
         </div>
 
-        {/* Image Preview */}
+        {/* Existing Images Preview */}
+        {product.images &&
+          product.images.length > 0 &&
+          imagePreviews.length === 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2 border border-gray-200 rounded-2xl p-4">
+              {product.images.map((src, idx) => (
+                <img
+                  key={idx}
+                  src={src}
+                  alt={`existing ${idx}`}
+                  className="w-full h-40 object-cover rounded"
+                />
+              ))}
+            </div>
+          )}
+
+        {/* New Image Preview */}
         {imagePreviews.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2 border border-gray-200 rounded-2xl p-4">
             {imagePreviews.map((src, idx) => (
@@ -278,6 +286,7 @@ export default function AddProduct() {
             <input
               type="checkbox"
               {...register("showOnHomepage")}
+              defaultChecked={product.showOnHomepage}
               className="checkbox"
             />
             <span className="label-text">Show on homepage</span>
@@ -286,7 +295,7 @@ export default function AddProduct() {
 
         <div className="pt-4">
           <button type="submit" className="btn btn-primary w-full">
-            Add Product
+            Update Product
           </button>
         </div>
       </form>
