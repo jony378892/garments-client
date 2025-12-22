@@ -30,6 +30,7 @@ import OrderForm from "../pages/OrderForm/OrderForm";
 import OrderDetails from "../pages/Dashboard/AdminOnly/AllOrders/OrderDetails/OrderDetails";
 import UpdateProduct from "../pages/Dashboard/ManagerOnly/UpdateProduct/UpdateProduct";
 import NotFound from "../components/NotFound";
+import UpdateProductAdmin from "../pages/Dashboard/AdminOnly/UpdateProductAdmin/UpdateProductAdmin";
 
 export const router = createBrowserRouter([
   {
@@ -145,6 +146,15 @@ export const router = createBrowserRouter([
           </ManagerRoute>
         ),
       },
+      {
+        path: "update-product/:id/admin",
+        element: (
+          <AdminRoute>
+            <UpdateProductAdmin />
+          </AdminRoute>
+        ),
+      },
+
       {
         path: "all-products",
         element: (

@@ -52,9 +52,9 @@ export default function OrderForm() {
       productName: product.name,
       unitPrice: product.price,
       totalPrice: totalPrice,
-      approvalStatus: "pending",
-      createdAt: new Date(),
       status: "pending",
+      createdAt: new Date(),
+      createdBy: product.createdBy,
     };
 
     if (product.paymentMethod == "cash_on_delivery") {

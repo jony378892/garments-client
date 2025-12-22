@@ -17,9 +17,7 @@ const useAxiosSecure = () => {
       async (config) => {
         if (user) {
           try {
-            // Get fresh ID token from Firebase user
-            const token = await user.getIdToken(true); // true forces refresh
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization = `Bearer ${user.accessToken}`;
           } catch (error) {
             console.error("Error getting ID token:", error);
           }

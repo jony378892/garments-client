@@ -3,7 +3,7 @@ import { FaQuoteLeft, FaQuoteRight } from "react-icons/fa";
 
 export default function FeedbackCard({ feedback }) {
   return (
-    <div className="flex flex-col justify-center items-center gap-6 p-6 bg-gray-200 rounded-2xl shadow-sm hover:shadow-md transition">
+    <div className="flex flex-col justify-center items-center gap-6 p-6 bg-gray-200 rounded-2xl shadow-sm hover:shadow-md transition h-64">
       {/* Review */}
       <div className=" text-gray-600 leading-relaxed flex  items-stretch  w-full sm:w-3/4 text-center gap-3 text-lg font-semibold ">
         <FaQuoteLeft className="self-start -mt-5" size={60} />

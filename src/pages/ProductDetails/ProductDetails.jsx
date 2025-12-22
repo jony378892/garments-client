@@ -149,6 +149,9 @@ export default function ProductDetails() {
               <li>
                 <strong>Available:</strong> {available}
               </li>
+              <li>
+                <strong>Payment Method:</strong> {product.paymentMethod}
+              </li>
             </ul>
           </div>
         </div>

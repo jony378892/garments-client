@@ -16,7 +16,7 @@ export default function MyOrders() {
   } = useQuery({
     queryKey: ["my-orders"],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/my-orders?email=${user.email}`);
+      const res = await axiosSecure.get(`/my-orders`);
       return res.data;
     },
   });
@@ -71,18 +71,22 @@ export default function MyOrders() {
                   <td className="font-mono text-xs">{order._id}</td>
                   <td>{order.productName}</td>
                   <td>{order.quantity}</td>
-                  <td>{order.approvalStatus}</td>
+                  <td>{order.status}</td>
                   <td className="capitalize">{order.paymentMethod}</td>
-                  <td className="flex gap-2">
-                    <Link to={`/dashboard/track-order/${order._id}`}>
-                      <button className="btn btn-sm btn-primary">View </button>
-                    </Link>
-                    <button
-                      className="btn btn-error btn-sm"
-                      onClick={() => handleCancel(order._id)}
-                    >
-                      Cancel{" "}
-                    </button>
+                  <td>
+                    <div className="flex items-center gap-2">
+                      <Link to={`/dashboard/track-order/${order._id}`}>
+                        <button className="btn btn-sm btn-primary">
+                          View{" "}
+                        </button>
+                      </Link>
+                      <button
+                        className="btn btn-error btn-sm"
+                        onClick={() => handleCancel(order._id)}
+                      >
+                        Cancel{" "}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -43,15 +43,15 @@ const ProductEditModal = forwardRef(({ product, onUpdate }, ref) => {
             <div className="form-control flex flex-col">
               <label className="label text-sm">Payment option</label>
               <select
-                defaultValue="Choose Payment Method"
+                defaultValue={product.paymentMethod}
                 {...register("paymentMethod", {
                   required: true,
                 })}
                 className="select"
               >
                 <option disabled={true}>payment option</option>
-                <option>Cash on delivery</option>
-                <option>Stripe</option>
+                <option value={"cash_on_delivery"}>Cash on delivery</option>
+                <option value={"fastPay"}>FastPay</option>
               </select>
             </div>
           </div>

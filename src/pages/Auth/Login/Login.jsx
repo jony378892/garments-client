@@ -1,11 +1,11 @@
 import { Link, useLocation, useNavigate } from "react-router";
-import toast, { ToastBar } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import SocialLogin from "../SocialLogin/SocialLogin";
 import useAuth from "../../../hooks/useAuth";
 
 export default function Login() {
-  const { user, signInUser } = useAuth();
+  const { signInUser } = useAuth();
   const {
     register,
     handleSubmit,
@@ -20,7 +20,7 @@ export default function Login() {
 
     signInUser(email, password)
       .then(() => {
-        toast("Signin successful");
+        toast.success("Login successful!");
 
         if (location.state) {
           navigate(location.state);
@@ -78,7 +78,7 @@ export default function Login() {
                 Forgot password?
               </Link>
             </div>
-            <button className="btn btn-neutral mt-4 mr-4">Login</button>
+            <button className="btn btn-neutral mt-4 mr-4">Login </button>
             <p className="font-semibold text-xs">
               Don't have an account?{" "}
               <Link to={"/register"} className="text-blue-700 underline">

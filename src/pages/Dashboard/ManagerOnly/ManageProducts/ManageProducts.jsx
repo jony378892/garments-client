@@ -58,10 +58,6 @@ export default function ManageProducts() {
     setSearch(e.target.value);
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <div className="p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
@@ -77,7 +73,11 @@ export default function ManageProducts() {
         </label>
       </div>
 
-      {products.length === 0 ? (
+      {isLoading ? (
+        <div className="flex items-center justify-center h-44">
+          <span className="loading loading-spinner"></span>
+        </div>
+      ) : products.length === 0 ? (
         <h2 className="text-center text-gray-500">No products found.</h2>
       ) : (
         <div className="overflow-x-auto bg-white rounded-lg shadow">

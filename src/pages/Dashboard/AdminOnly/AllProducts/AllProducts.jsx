@@ -1,16 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { useRef, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import useAxiosSecure from "../../../../hooks/useAxiosSecure";
 import Loading from "../../../../components/Shared/Loading";
-import ProductEditModal from "../../../../components/Shared/ProductEditModal";
-import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import { Link } from "react-router";
 
 export default function AllProducts() {
   const axiosSecure = useAxiosSecure();
-  const modalRef = useRef();
-  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const {
     isLoading,
@@ -29,7 +25,7 @@ export default function AllProducts() {
       showOnHomepage: !product.showOnHomepage,
     });
     if (result.data.modifiedCount) {
-      toast.success(
+      Swal.fire(
         `Product ${
           !product.showOnHomepage
             ? "Added on homepage"
@@ -69,18 +65,6 @@ export default function AllProducts() {
         }
       }
     });
-  };
-
-  const handleShowModal = (product) => {
-    setSelectedProduct(product);
-    modalRef.current?.showModal();
-  };
-
-  const handleUpdateProduct = async (data) => {
-    await axiosSecure.patch(`/products/${selectedProduct._id}`, data);
-    modalRef.current.close();
-    setSelectedProduct(null);
-    refetch();
   };
 
   if (isLoading) return <Loading />;
@@ -127,32 +111,21 @@ export default function AllProducts() {
                       onChange={() => handleProductListing(product)}
                     />
                   </td>
-                  <td className="flex">
+                  <td className="flex gap-3">
+                    <Link to={`/dashboard/update-product/${product._id}/admin`}>
+                      <button className="btn btn-sm btn-primary">Edit</button>
+                    </Link>
                     <button
-                      className="btn btn-sm btn-ghost"
-                      onClick={() => handleShowModal(product)}
-                    >
-                      <FaEdit size={18} />
-                    </button>
-                    <button
-                      className="btn btn-sm btn-ghost"
+                      className="btn btn-sm btn-warning"
                       onClick={() => handleDeleteProduct(product._id)}
                     >
-                      <FaTrash size={18} />
+                      Delete
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-
-          {selectedProduct && (
-            <ProductEditModal
-              ref={modalRef}
-              product={selectedProduct}
-              onUpdate={handleUpdateProduct}
-            />
-          )}
         </>
       )}
     </div>

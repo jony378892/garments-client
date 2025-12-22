@@ -2,8 +2,8 @@ import { Link } from "react-router";
 import Logo from "./Shared/Logo";
 
 import useAuth from "../hooks/useAuth";
-import toast from "react-hot-toast";
 import { IoMdMenu } from "react-icons/io";
+import Swal from "sweetalert2";
 
 export default function Navbar() {
   const { user, logOutUser } = useAuth();
@@ -12,7 +12,7 @@ export default function Navbar() {
   const handleLogOut = () => {
     logOutUser()
       .then(() => {
-        toast.success("Logout successfully");
+        Swal.fire("Logout successful");
       })
       .catch((error) => {
         console.log(error.message);

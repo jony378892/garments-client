@@ -1,0 +1,242 @@
+[
+  {
+    "name": "Men's Cotton T-Shirt",
+    "description": "High-quality cotton t-shirt suitable for everyday wear.",
+    "category": "Shirt",
+    "price": 8.99,
+    "availableQuantity": 1200,
+    "moq": 50,
+    "images": [
+      "https://picsum.photos/400/500?random=1",
+      "https://picsum.photos/400/500?random=2"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "cash_on_delivery",
+    "showOnHomepage": false,
+    "createdBy": "seller1@email.com"
+  },
+  {
+    "name": "Women's Casual Kurti",
+    "description": "Comfortable kurti designed for daily use.",
+    "category": "Shirt",
+    "price": 14.5,
+    "availableQuantity": 800,
+    "moq": 30,
+    "images": [
+      "https://picsum.photos/400/500?random=3",
+      "https://picsum.photos/400/500?random=4"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "stripe",
+    "showOnHomepage": true,
+    "createdBy": "seller2@email.com"
+  },
+  {
+    "name": "Men's Denim Jeans",
+    "description": "Durable denim jeans with modern fit.",
+    "category": "Pant",
+    "price": 22,
+    "availableQuantity": 600,
+    "moq": 40,
+    "images": [
+      "https://picsum.photos/400/500?random=5",
+      "https://picsum.photos/400/500?random=6"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "cash_on_delivery",
+    "showOnHomepage": false,
+    "createdBy": "seller3@email.com"
+  },
+  {
+    "name": "Women's Leggings",
+    "description": "Stretchable leggings offering all-day comfort.",
+    "category": "Pant",
+    "price": 9.75,
+    "availableQuantity": 1100,
+    "moq": 60,
+    "images": [
+      "https://picsum.photos/400/500?random=7",
+      "https://picsum.photos/400/500?random=8"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "stripe",
+    "showOnHomepage": true,
+    "createdBy": "seller4@email.com"
+  },
+  {
+    "name": "Kids Printed T-Shirt",
+    "description": "Soft cotton printed t-shirt for kids.",
+    "category": "Shirt",
+    "price": 6.25,
+    "availableQuantity": 900,
+    "moq": 50,
+    "images": [
+      "https://picsum.photos/400/500?random=9",
+      "https://picsum.photos/400/500?random=10"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "cash_on_delivery",
+    "showOnHomepage": false,
+    "createdBy": "seller5@email.com"
+  },
+  {
+    "name": "Men's Polo Shirt",
+    "description": "Classic polo shirt for casual wear.",
+    "category": "Shirt",
+    "price": 12.99,
+    "availableQuantity": 700,
+    "moq": 35,
+    "images": [
+      "https://picsum.photos/400/500?random=11",
+      "https://picsum.photos/400/500?random=12"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "stripe",
+    "showOnHomepage": true,
+    "createdBy": "seller6@email.com"
+  },
+  {
+    "name": "Women's Long Dress",
+    "description": "Elegant long dress for special occasions.",
+    "category": "Accessories",
+    "price": 28.5,
+    "availableQuantity": 400,
+    "moq": 20,
+    "images": [
+      "https://picsum.photos/400/500?random=13",
+      "https://picsum.photos/400/500?random=14"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "stripe",
+    "showOnHomepage": false,
+    "createdBy": "seller7@email.com"
+  },
+  {
+    "name": "Men's Formal Shirt",
+    "description": "Tailored formal shirt for office wear.",
+    "category": "Shirt",
+    "price": 18.75,
+    "availableQuantity": 550,
+    "moq": 25,
+    "images": [
+      "https://picsum.photos/400/500?random=15",
+      "https://picsum.photos/400/500?random=16"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "cash_on_delivery",
+    "showOnHomepage": false,
+    "createdBy": "seller8@email.com"
+  },
+  {
+    "name": "Kids Denim Shorts",
+    "description": "Comfortable denim shorts for kids.",
+    "category": "Pant",
+    "price": 7.5,
+    "availableQuantity": 650,
+    "moq": 30,
+    "images": [
+      "https://picsum.photos/400/500?random=17",
+      "https://picsum.photos/400/500?random=18"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "cash_on_delivery",
+    "showOnHomepage": false,
+    "createdBy": "seller9@email.com"
+  },
+  {
+    "name": "Women's Cotton Saree",
+    "description": "Traditional cotton saree with premium finish.",
+    "category": "Accessories",
+    "price": 35,
+    "availableQuantity": 300,
+    "moq": 10,
+    "images": [
+      "https://picsum.photos/400/500?random=19",
+      "https://picsum.photos/400/500?random=20"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "stripe",
+    "showOnHomepage": true,
+    "createdBy": "seller10@email.com"
+  },
+  {
+    "name": "Men's Hooded Jacket",
+    "description": "Warm hooded jacket for winter.",
+    "category": "Jacket",
+    "price": 32.99,
+    "availableQuantity": 250,
+    "moq": 15,
+    "images": [
+      "https://picsum.photos/400/500?random=21",
+      "https://picsum.photos/400/500?random=22"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "stripe",
+    "showOnHomepage": true,
+    "createdBy": "seller11@email.com"
+  },
+  {
+    "name": "Kids School Uniform Set",
+    "description": "Durable school uniform set for kids.",
+    "category": "Accessories",
+    "price": 15,
+    "availableQuantity": 500,
+    "moq": 20,
+    "images": [
+      "https://picsum.photos/400/500?random=23",
+      "https://picsum.photos/400/500?random=24"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "cash_on_delivery",
+    "showOnHomepage": false,
+    "createdBy": "seller12@email.com"
+  },
+  {
+    "name": "Women's Office Blouse",
+    "description": "Professional blouse for office wear.",
+    "category": "Shirt",
+    "price": 16.75,
+    "availableQuantity": 480,
+    "moq": 25,
+    "images": [
+      "https://picsum.photos/400/500?random=25",
+      "https://picsum.photos/400/500?random=26"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "stripe",
+    "showOnHomepage": false,
+    "createdBy": "seller13@email.com"
+  },
+  {
+    "name": "Men's Chino Pants",
+    "description": "Slim-fit chino pants for casual and formal use.",
+    "category": "Pant",
+    "price": 24.5,
+    "availableQuantity": 520,
+    "moq": 30,
+    "images": [
+      "https://picsum.photos/400/500?random=27",
+      "https://picsum.photos/400/500?random=28"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "cash_on_delivery",
+    "showOnHomepage": false,
+    "createdBy": "seller14@email.com"
+  },
+  {
+    "name": "Kids Winter Sweater",
+    "description": "Warm and soft sweater for winter.",
+    "category": "Jacket",
+    "price": 11.25,
+    "availableQuantity": 420,
+    "moq": 20,
+    "images": [
+      "https://picsum.photos/400/500?random=29",
+      "https://picsum.photos/400/500?random=30"
+    ],
+    "videoUrl": "",
+    "paymentMethod": "cash_on_delivery",
+    "showOnHomepage": true,
+    "createdBy": "seller15@email.com"
+  }
+]

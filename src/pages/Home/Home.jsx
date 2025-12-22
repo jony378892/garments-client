@@ -3,6 +3,7 @@ import OurProducts from "./OurProducts/OurProducts";
 import HowItWorks from "./HowItWorks/HowItWorks";
 import Feedback from "./Feedback/Feedback";
 import NewsLetter from "./NewsLetter/NewsLetter";
+import TrustedCustomer from "./TrustedCustomer/TrustedCustomer";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
       <OurProducts />
       <HowItWorks />
       <Feedback />
+      <TrustedCustomer />
       <NewsLetter />
     </div>
   );

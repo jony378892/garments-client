@@ -3,11 +3,9 @@ import useAxiosSecure from "../../../../hooks/useAxiosSecure";
 import Loading from "../../../../components/Shared/Loading";
 import Swal from "sweetalert2";
 import { FaEye } from "react-icons/fa";
-import useAuth from "../../../../hooks/useAuth";
 
 export default function PendingOrders() {
   const axiosSecure = useAxiosSecure();
-  const { user } = useAuth();
   const {
     isLoading,
     refetch,
@@ -15,9 +13,7 @@ export default function PendingOrders() {
   } = useQuery({
     queryKey: ["pending-orders"],
     queryFn: async () => {
-      const res = await axiosSecure.get(
-        `/managed-products/${user.email}/pending`
-      );
+      const res = await axiosSecure.get(`/managed-products/pending`);
       return res.data;
     },
   });
@@ -81,32 +77,29 @@ export default function PendingOrders() {
       <div className="mb-6">
         <h2 className="text-2xl font-bold">Pending Orders</h2>
       </div>
+      <div className="overflow-x-auto bg-white rounded-lg shadow">
+        <table className="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>User</th>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Order Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
 
-      {orders.length === 0 ? (
-        <h2 className="text-center text-gray-500">No pending orders.</h2>
-      ) : (
-        <div className="overflow-x-auto bg-white rounded-lg shadow">
-          <table className="table table-zebra w-full">
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>User</th>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Order Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order._id}>
-                  <td className="font-mono text-xs">{order._id}</td>
-                  <td>{order.email}</td>
-                  <td>{order.productName}</td>
-                  <td>{order.quantity}</td>
-                  <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                  <td className="flex gap-2">
+          <tbody>
+            {orders.map((order) => (
+              <tr key={order._id}>
+                <td className="font-mono text-xs">{order._id}</td>
+                <td>{order.email}</td>
+                <td>{order.productName}</td>
+                <td>{order.quantity}</td>
+                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                <td>
+                  <div className="flex flex-col items-center gap-2">
                     {order.approvalStatus === "approved" ? (
                       <p className="text-green-500 font-semibold">Approved</p>
                     ) : order.approvalStatus === "rejected" ? (
@@ -130,17 +123,20 @@ export default function PendingOrders() {
                     )}
 
                     <button
-                      className="btn btn-xs btn-ghost"
+                      className="btn btn-xs"
                       onClick={() => handleView(order)}
                     >
-                      <FaEye />
+                      View
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {orders.length === 0 && (
+        <h2 className="text-center text-gray-500 mt-20">No pending orders.</h2>
       )}
     </div>
   );

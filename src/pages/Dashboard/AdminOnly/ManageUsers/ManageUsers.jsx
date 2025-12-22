@@ -121,7 +121,6 @@ export default function ManageUsers() {
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
-              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -141,30 +140,35 @@ export default function ManageUsers() {
                   </td>
                   <td>{user.email}</td>
                   <td>{user.role}</td>
-                  <td
-                    className={`font-semibold ${
-                      user.status == "approved"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {user.status}
-                  </td>
-                  <td className="flex">
-                    <button
-                      className="btn btn-sm btn-ghost"
-                      onClick={() => handleApproveUser(user._id)}
-                      title="Edit Role"
-                    >
-                      <FaUserCheck size={16} />
-                    </button>
-                    <button
-                      className="btn btn-sm btn-ghost"
-                      onClick={() => handleSuspendUser(user._id)}
-                      title="Edit Role"
-                    >
-                      <FaUserTimes size={16} />
-                    </button>
+                  <td className="flex gap-3">
+                    {user.status !== "pending" ? (
+                      <p
+                        className={`font-bold uppercase ${
+                          user.status == "approved"
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {user.status}
+                      </p>
+                    ) : (
+                      <>
+                        <button
+                          className="btn btn-sm btn-primary"
+                          onClick={() => handleApproveUser(user._id)}
+                          title="Edit Role"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          className="btn btn-sm btn-warning"
+                          onClick={() => handleSuspendUser(user._id)}
+                          title="Edit Role"
+                        >
+                          Suspend
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))

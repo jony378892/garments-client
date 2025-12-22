@@ -21,6 +21,8 @@
   width: 100%;
 }
 
-input {
+input,
+select,
+textarea {
   @apply focus:outline-none focus:ring-0;
 }

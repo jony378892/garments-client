@@ -7,12 +7,13 @@ import SocialLogin from "../SocialLogin/SocialLogin";
 import useAuth from "../../../hooks/useAuth";
 import axios from "axios";
 import useAxios from "../../../hooks/useAxios";
+import Swal from "sweetalert2";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const axiosInstance = useAxios();
-  const { registerUser, updateUser, loading, setLoading } = useAuth();
+  const { registerUser, updateUser, loading } = useAuth();
 
   const {
     register,
@@ -22,23 +23,24 @@ export default function Register() {
 
   const handleRegister = async (data) => {
     const { email, password, image, displayName, role } = data;
-    console.log(data);
+    // console.log(data);
 
     if (!image || !image[0]) {
       toast.error("Please upload a valid image");
       return;
     }
 
-    registerUser(email, password)
-      .then(() => {
-        const formData = new FormData();
-        formData.append("image", image[0]);
+    registerUser(email, password).then(() => {
+      const formData = new FormData();
+      formData.append("image", image[0]);
 
-        const image_api_url = `https://api.imgbb.com/1/upload?key=${
-          import.meta.env.VITE_IMAGE_API_KEY
-        }`;
+      const image_api_url = `https://api.imgbb.com/1/upload?key=${
+        import.meta.env.VITE_IMAGE_API_KEY
+      }`;
 
-        axios.post(image_api_url, formData).then((res) => {
+      axios
+        .post(image_api_url, formData)
+        .then((res) => {
           const photoURL = res.data.data.url;
 
           const userInfo = {
@@ -48,36 +50,30 @@ export default function Register() {
             role,
           };
 
-          // store user data in database
-          axiosInstance.post("/users", userInfo).then((result) => {
-            if (result.data.insertedId) {
-              console.log(result.data);
-            }
-          });
-
           // Update firebase profile
           updateUser({
             displayName,
             photoURL,
-          })
-            .then(() => {
-              toast.success("Registration successful");
+          }).then(() => {
+            axiosInstance.post("/users", userInfo).then((result) => {
+              if (result.data.insertedId) {
+                Swal.fire("Registration successful");
+
+                navigate(location.state || "/");
+              }
               // navigate to other route
-              navigate(location.state || "/");
-            })
-            .catch((error) => {
-              setLoading(false);
-              console.log(error);
             });
+          });
+        })
+        .catch((error) => {
+          if (
+            error.message === "Firebase: Error (auth/email-already-in-use)."
+          ) {
+            toast.error("User already exists");
+          }
+          console.log(error.message);
         });
-      })
-      .catch((error) => {
-        setLoading(false);
-        if (error.message === "Firebase: Error (auth/email-already-in-use).") {
-          toast.error("User already exists");
-        }
-        console.log(error.message);
-      });
+    });
   };
 
   return (
@@ -193,14 +189,12 @@ export default function Register() {
             )}
 
             <button className="btn btn-neutral mt-5 w-full">
-              {!loading ? (
-                "Signup"
-              ) : (
-                <>
+              <p>
+                Signing Up
+                {loading && (
                   <span className="loading loading-spinner loading-sm"></span>
-                  <p>Signing Up</p>
-                </>
-              )}
+                )}
+              </p>
             </button>
           </fieldset>
 

@@ -1,4 +1,4 @@
-import { Autoplay, EffectCoverflow, Pagination } from "swiper/modules";
+import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
@@ -67,24 +67,16 @@ export default function Feedback() {
         {/* Slider */}
         <Swiper
           loop={true}
-          effect={"coverflow"}
           grabCursor={true}
+          spaceBetween={30}
           centeredSlides={true}
           slidesPerView={1.8}
-          coverflowEffect={{
-            rotate: 30,
-            stretch: "50%",
-            depth: 200,
-            modifier: 1,
-            scale: 0.6,
-            slideShadows: true,
-          }}
           autoplay={{
             delay: 2000,
             disableOnInteraction: false,
           }}
           pagination={true}
-          modules={[EffectCoverflow, Pagination, Autoplay]}
+          modules={[Pagination, Autoplay]}
           className="mySwiper"
         >
           {feedbacks.map((feedback) => (
