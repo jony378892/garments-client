@@ -31,17 +31,17 @@ export default function OurProducts() {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {products.map((product) => (
             <div
               key={product._id}
-              className="bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden"
+              className="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden"
             >
               <figure className="overflow-hidden">
                 <img
                   src={product.images?.[0]}
                   alt={product.name}
-                  className="h-56 w-full object-cover hover:scale-105 transition duration-300"
+                  className="h-56 w-full object-cover object-center hover:scale-105 transition duration-300"
                 />
               </figure>
 

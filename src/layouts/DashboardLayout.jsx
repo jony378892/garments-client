@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router";
+import { Link, Navigate, Outlet } from "react-router";
 import { FaUser, FaUserCog } from "react-icons/fa";
 import { FiPackage } from "react-icons/fi";
 import { AiOutlineProduct } from "react-icons/ai";
@@ -6,9 +6,15 @@ import useRole from "../hooks/useRole";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { MdAddCard, MdBookmarkAdded } from "react-icons/md";
+import useAuth from "../hooks/useAuth";
 
 export default function DashboardLayout() {
   const { role } = useRole();
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <div>

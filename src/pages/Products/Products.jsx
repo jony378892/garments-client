@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../../components/Shared/Loading";
-import ProductCard from "./ProductCard";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { Link } from "react-router";
 
 export default function Products() {
   const axiosInstance = useAxiosSecure();
@@ -29,9 +29,42 @@ export default function Products() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 gap-y-10">
           {products.map((product) => (
-            <ProductCard key={product._id} product={product} />
+            <div
+              key={product._id}
+              className="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden"
+            >
+              <figure className="overflow-hidden">
+                <img
+                  src={product.images?.[0]}
+                  alt={product.name}
+                  className="h-72 w-full object-top object-cover hover:scale-105 transition duration-300"
+                />
+              </figure>
+
+              <div className="p-5 flex flex-col gap-3">
+                <h3 className="text-lg font-semibold text-gray-800 hover:text-blue-600 transition cursor-pointer">
+                  {product.name}
+                </h3>
+
+                <p className="text-sm text-gray-600 line-clamp-2">
+                  {product.description}
+                </p>
+
+                <div className="flex items-center justify-between pt-2">
+                  <span className="text-lg font-bold text-gray-800">
+                    $ {product.price}
+                  </span>
+
+                  <Link to={`/product/${product._id}`}>
+                    <button className="btn btn-sm btn-primary">
+                      View Details
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>
