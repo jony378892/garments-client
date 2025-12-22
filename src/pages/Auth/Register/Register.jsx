@@ -3,16 +3,15 @@ import { useState } from "react";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa6";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
-import SocialLogin from "../SocialLogin/SocialLogin";
 import useAuth from "../../../hooks/useAuth";
 import axios from "axios";
-import useAxios from "../../../hooks/useAxios";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const axiosInstance = useAxios();
+  const axiosSecure = useAxiosSecure();
   const { registerUser, updateUser, loading } = useAuth();
 
   const {
@@ -55,7 +54,7 @@ export default function Register() {
             displayName,
             photoURL,
           }).then(() => {
-            axiosInstance.post("/users", userInfo).then((result) => {
+            axiosSecure.post("/users", userInfo).then((result) => {
               if (result.data.insertedId) {
                 Swal.fire("Registration successful");
 

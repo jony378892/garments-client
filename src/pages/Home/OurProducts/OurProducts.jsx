@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import useAxios from "../../../hooks/useAxios";
 import Loading from "../../../components/Shared/Loading";
 import { Link } from "react-router";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 export default function OurProducts() {
-  const axiosInstance = useAxios();
+  const axiosSecure = useAxiosSecure();
 
   const { isLoading, data: products = [] } = useQuery({
     queryKey: ["home-products"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/products?limit=6");
+      const res = await axiosSecure.get("/products?limit=6");
       return res.data;
     },
   });

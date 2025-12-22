@@ -2,11 +2,11 @@ import { FcGoogle } from "react-icons/fc";
 import useAuth from "../../../hooks/useAuth";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
-import useAxios from "../../../hooks/useAxios";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 export default function SocialLogin() {
   const navigate = useNavigate();
-  const axiosInstance = useAxios();
+  const axiosInstance = useAxiosSecure();
   const { signInWithGoogle } = useAuth();
 
   const handleGoogleSignIn = () => {

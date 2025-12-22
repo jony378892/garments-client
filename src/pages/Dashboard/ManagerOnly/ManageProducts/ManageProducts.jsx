@@ -116,15 +116,17 @@ export default function ManageProducts() {
                     {product.paymentMethod.replaceAll("_", " ")}
                   </td>
                   <td>
-                    <Link to={`/dashboard/update-product/${product._id}`}>
-                      <button className="btn btn-sm btn-ghost">Edit</button>
-                    </Link>
-                    <button
-                      className="btn btn-sm btn-error"
-                      onClick={() => handleDelete(product._id)}
-                    >
-                      Delete
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <Link to={`/dashboard/update-product/${product._id}`}>
+                        <button className="btn btn-sm btn-primary">Edit</button>
+                      </Link>
+                      <button
+                        className="btn btn-sm btn-error"
+                        onClick={() => handleDelete(product._id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

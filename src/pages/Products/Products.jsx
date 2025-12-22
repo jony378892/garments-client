@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import useAxios from "../../hooks/useAxios";
 import Loading from "../../components/Shared/Loading";
 import ProductCard from "./ProductCard";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 export default function Products() {
-  const axiosInstance = useAxios();
+  const axiosInstance = useAxiosSecure();
 
   const { isLoading, data: products = [] } = useQuery({
     queryKey: ["products"],

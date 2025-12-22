@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
-import useAxios from "../../hooks/useAxios";
 import Loading from "../../components/Shared/Loading";
 import { useState } from "react";
 import useRole from "../../hooks/useRole";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 export default function ProductDetails() {
   const [mainImage, setMainImage] = useState(0);
   const { role } = useRole();
   const { id } = useParams();
-  const axiosInstance = useAxios();
+  const axiosInstance = useAxiosSecure();
 
   const { isLoading, data: product } = useQuery({
     queryKey: ["product", id],

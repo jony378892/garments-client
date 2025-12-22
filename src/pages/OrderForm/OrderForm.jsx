@@ -1,7 +1,6 @@
 import { useNavigate, useParams } from "react-router";
 import { useForm, useWatch } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
-import useAxios from "../../hooks/useAxios";
 import Loading from "../../components/Shared/Loading";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -10,7 +9,6 @@ import toast from "react-hot-toast";
 export default function OrderForm() {
   const { user, loading } = useAuth();
   const { id } = useParams();
-  const axiosInstance = useAxios();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
 
@@ -18,7 +16,7 @@ export default function OrderForm() {
   const { isLoading, data: product } = useQuery({
     queryKey: ["product", id],
     queryFn: async () => {
-      const result = await axiosInstance.get(`/products/${id}`);
+      const result = await axiosSecure.get(`/products/${id}`);
       return result.data;
     },
   });
