@@ -5,9 +5,11 @@ import useAxiosSecure from "../../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import useCurrentUser from "../../../../hooks/useCurrentUser";
 
 export default function AddProduct() {
   const axiosSecure = useAxiosSecure();
+  const { currentUser } = useCurrentUser();
   const queryClient = useQueryClient();
   const {
     register,
@@ -25,6 +27,14 @@ export default function AddProduct() {
   };
 
   const onSubmit = async (data) => {
+    if (currentUser.status === "suspended") {
+      return Swal.fire({
+        title: "suspended",
+        text: "Your can't list product",
+        icon: "error",
+      });
+    }
+
     try {
       const files = Array.from(data.images);
       const uploadedImageUrls = [];

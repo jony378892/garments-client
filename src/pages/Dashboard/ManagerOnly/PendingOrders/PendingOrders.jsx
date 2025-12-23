@@ -3,8 +3,10 @@ import useAxiosSecure from "../../../../hooks/useAxiosSecure";
 import Loading from "../../../../components/Shared/Loading";
 import Swal from "sweetalert2";
 import { FaEye } from "react-icons/fa";
+import useCurrentUser from "../../../../hooks/useCurrentUser";
 
 export default function PendingOrders() {
+  const { currentUser } = useCurrentUser();
   const axiosSecure = useAxiosSecure();
   const {
     isLoading,
@@ -21,6 +23,14 @@ export default function PendingOrders() {
   if (isLoading) return <Loading />;
 
   const handleApprove = async (id) => {
+    if (currentUser.status === "suspended") {
+      return Swal.fire({
+        title: "suspended",
+        text: "Your can't approved order",
+        icon: "error",
+      });
+    }
+
     const result = await Swal.fire({
       title: "Approve this order?",
       icon: "question",
@@ -41,6 +51,14 @@ export default function PendingOrders() {
   };
 
   const handleReject = async (id) => {
+    if (currentUser.status === "suspended") {
+      return Swal.fire({
+        title: "suspended",
+        text: "Your can't reject product",
+        icon: "error",
+      });
+    }
+
     const result = await Swal.fire({
       title: "Reject this order?",
       icon: "warning",
@@ -99,7 +117,7 @@ export default function PendingOrders() {
                 <td>{order.quantity}</td>
                 <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                 <td>
-                  <div className="flex flex-col items-center gap-2">
+                  <div className="flex items-center gap-2">
                     {order.approvalStatus === "approved" ? (
                       <p className="text-green-500 font-semibold">Approved</p>
                     ) : order.approvalStatus === "rejected" ? (
@@ -107,14 +125,14 @@ export default function PendingOrders() {
                     ) : (
                       <>
                         <button
-                          className="btn btn-xs btn-success"
+                          className="btn btn-sm btn-success"
                           onClick={() => handleApprove(order._id)}
                         >
                           Approve
                         </button>
 
                         <button
-                          className="btn btn-xs btn-error"
+                          className="btn btn-sm btn-error"
                           onClick={() => handleReject(order._id)}
                         >
                           Reject
@@ -123,7 +141,7 @@ export default function PendingOrders() {
                     )}
 
                     <button
-                      className="btn btn-xs"
+                      className="btn btn-sm"
                       onClick={() => handleView(order)}
                     >
                       View
