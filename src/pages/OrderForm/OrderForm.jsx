@@ -5,9 +5,12 @@ import Loading from "../../components/Shared/Loading";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
+import useCurrentUser from "../../hooks/useCurrentUser";
 
 export default function OrderForm() {
   const { user, loading } = useAuth();
+  const { currentUser } = useCurrentUser();
   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
@@ -62,6 +65,13 @@ export default function OrderForm() {
     }
 
     // console.log("Order Data:", orderPayload);
+    if (currentUser.status === "suspended" && currentUser.role === "buyer") {
+      return Swal.fire({
+        title: "User suspended",
+        text: "Your can't place order",
+        icon: "error",
+      });
+    }
 
     try {
       const orderResponse = await axiosSecure.post("/orders", orderPayload);

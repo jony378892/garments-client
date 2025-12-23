@@ -7,10 +7,15 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { MdAddCard, MdBookmarkAdded } from "react-icons/md";
 import useAuth from "../hooks/useAuth";
+import Loading from "../components/Shared/Loading";
 
 export default function DashboardLayout() {
   const { role } = useRole();
-  const { user } = useAuth();
+  const { loading, user } = useAuth();
+
+  if (loading) {
+    return <Loading />;
+  }
 
   if (!user) {
     return <Navigate to="/login" />;

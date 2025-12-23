@@ -21,8 +21,15 @@ export default function MyProfile() {
     return <Loading />;
   }
 
-  const { displayName, email, photoURL, role, status, createdAt } =
-    currentUser || {};
+  const {
+    displayName,
+    email,
+    photoURL,
+    role,
+    status,
+    createdAt,
+    suspendReason,
+  } = currentUser || {};
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -64,6 +71,11 @@ export default function MyProfile() {
           <div>
             <p className="text-sm text-gray-500">Account Status</p>
             <p className="font-medium capitalize">{status}</p>
+          </div>
+
+          <div>
+            <p className="text-sm text-gray-500">Suspended Feedback</p>
+            <p className="font-medium capitalize">{suspendReason}</p>
           </div>
 
           <div>

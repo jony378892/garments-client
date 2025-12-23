@@ -1,11 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../hooks/useAxiosSecure";
-import { FaEdit, FaUserCheck, FaUserTimes } from "react-icons/fa";
 import Loading from "../../../../components/Shared/Loading";
 import Swal from "sweetalert2";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function ManageUsers() {
   const axiosSecure = useAxiosSecure();
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const {
     isLoading,
@@ -49,7 +51,7 @@ export default function ManageUsers() {
               icon: "error",
             });
           }
-        } catch (error) {
+        } catch {
           Swal.fire({
             title: "Error",
             text: "Error approving user.",
@@ -62,45 +64,55 @@ export default function ManageUsers() {
   };
 
   const handleSuspendUser = async (id) => {
-    Swal.fire({
-      title: "Suspend the user",
-      text: "You won't be able to revert this!",
-      icon: "success",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, suspend!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const res = await axiosSecure.patch(`/users/${id}/role`, {
-            status: "suspended",
-          });
+    const user = users.find((u) => u._id === id);
+    setSelectedUser(user || { _id: id });
+  };
 
-          if (res.data.modifiedCount) {
-            Swal.fire({
-              title: "User Suspended!",
-              text: "Successfully suspended user.",
-              icon: "success",
-            });
-            refetch();
-          } else {
-            Swal.fire({
-              title: "Error",
-              text: "Something went wrong.",
-              icon: "error",
-            });
-          }
-        } catch (error) {
-          Swal.fire({
-            title: "Error",
-            text: "Error approving user.",
-            icon: "error",
-          });
-          // console.log(error)
-        }
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  const submitSuspend = async (data) => {
+    if (!selectedUser) return;
+    try {
+      const payload = {
+        status: "suspended",
+        suspendReason: data.reason,
+        suspendFeedback: data.feedback || "",
+      };
+
+      const res = await axiosSecure.patch(
+        `/users/${selectedUser._id}/role`,
+        payload
+      );
+
+      if (res.data.modifiedCount) {
+        Swal.fire({
+          title: "User Suspended!",
+          text: "Successfully suspended user with provided reason.",
+          icon: "success",
+        });
+        refetch();
+        reset();
+        setSelectedUser(null);
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "Something went wrong.",
+          icon: "error",
+        });
       }
-    });
+    } catch (err) {
+      Swal.fire({
+        title: "Error",
+        text: "Failed to suspend user.",
+        icon: "error",
+      });
+      console.error(err);
+    }
   };
 
   if (isLoading) {
@@ -163,7 +175,7 @@ export default function ManageUsers() {
                         <button
                           className="btn btn-sm btn-warning"
                           onClick={() => handleSuspendUser(user._id)}
-                          title="Edit Role"
+                          title="Suspend User"
                         >
                           Suspend
                         </button>
@@ -175,6 +187,74 @@ export default function ManageUsers() {
             )}
           </tbody>
         </table>
+        {/* Suspend user modal */}
+        {selectedUser && (
+          <dialog open className="modal modal-bottom sm:modal-middle">
+            <div className="modal-box">
+              <h3 className="font-bold text-lg">Suspend User</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Provide a reason and any additional feedback for suspending{" "}
+                <strong>
+                  {selectedUser.displayName || selectedUser.email}
+                </strong>
+              </p>
+
+              <form
+                onSubmit={handleSubmit(submitSuspend)}
+                className="space-y-4"
+              >
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Reason for suspension *</span>
+                  </label>
+                  <input
+                    {...register("reason", { required: "Reason is required" })}
+                    className="input input-bordered"
+                    placeholder="e.g., policy violation, repeated abuse"
+                  />
+                  {errors.reason && (
+                    <span className="text-error text-sm">
+                      {errors.reason.message}
+                    </span>
+                  )}
+                </div>
+
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">
+                      Additional feedback (optional)
+                    </span>
+                  </label>
+                  <textarea
+                    {...register("feedback")}
+                    className="textarea textarea-bordered"
+                    placeholder="Optional notes to store with suspension"
+                  />
+                </div>
+
+                <div className="modal-action">
+                  <button
+                    type="button"
+                    className="btn"
+                    onClick={() => {
+                      reset();
+                      setSelectedUser(null);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-warning"
+                    disabled={isSubmitting}
+                  >
+                    Suspend
+                  </button>
+                </div>
+              </form>
+            </div>
+          </dialog>
+        )}
       </div>
     </div>
   );

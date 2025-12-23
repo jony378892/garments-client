@@ -3,7 +3,7 @@ import Logo from "./Shared/Logo";
 
 import useAuth from "../hooks/useAuth";
 import { IoMdMenu } from "react-icons/io";
-import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 export default function Navbar() {
   const { user, logOutUser } = useAuth();
@@ -12,7 +12,7 @@ export default function Navbar() {
   const handleLogOut = () => {
     logOutUser()
       .then(() => {
-        Swal.fire("Logout successful");
+        toast.success("Logout successful");
       })
       .catch((error) => {
         console.log(error.message);
